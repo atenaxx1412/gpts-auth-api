@@ -3,6 +3,10 @@ import { doc, setDoc, getDoc, collection, query, where, getDocs } from 'firebase
 import { db } from './firebase'
 import { URL as URLType } from '@/types'
 
+export function generateUniqueId(): string {
+  return uuidv4()
+}
+
 export class URLGenerator {
   static generateUrlId(): string {
     return uuidv4()

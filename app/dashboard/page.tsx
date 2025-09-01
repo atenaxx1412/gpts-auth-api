@@ -8,7 +8,7 @@ import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import { URL as URLType } from '@/types'
-import { KeyIcon, ChartBarIcon, BoltIcon } from '@heroicons/react/24/solid'
+import { KeyIcon, ChartBarIcon, BoltIcon, UserIcon, PencilIcon, TrashIcon, EyeIcon, DocumentTextIcon } from '@heroicons/react/24/solid'
 
 function DashboardContent() {
   const { user } = useAuth()
@@ -67,6 +67,31 @@ function DashboardContent() {
     }
   }
 
+  const deleteUrl = async (urlId: string, urlName: string) => {
+    if (!confirm(`「${urlName}」を削除しますか？この操作は取り消せません。`)) {
+      return
+    }
+
+    try {
+      const response = await fetch(`/api/admin/urls/${urlId}`, {
+        method: 'DELETE'
+      })
+
+      if (response.ok) {
+        fetchUrls()
+      } else {
+        alert('URL削除に失敗しました')
+      }
+    } catch (error) {
+      console.error('Failed to delete URL:', error)
+      alert('URL削除でエラーが発生しました')
+    }
+  }
+
+  const editUrl = (urlId: string) => {
+    router.push(`/dashboard/edit/${urlId}`)
+  }
+
   const getAuthTypeName = (authType: string) => {
     switch (authType) {
       case 'password': return 'パスワード認証'
@@ -87,6 +112,13 @@ function DashboardContent() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-gray-700">{user?.email}</span>
+              <button
+                onClick={() => router.push('/profile')}
+                className="flex items-center space-x-2 bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              >
+                <UserIcon className="h-4 w-4" />
+                <span>プロファイル</span>
+              </button>
               <button
                 onClick={handleLogout}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium"
@@ -163,6 +195,33 @@ function DashboardContent() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <button
+            onClick={() => router.push('/dashboard/logs')}
+            className="bg-white hover:bg-gray-50 border border-gray-300 rounded-lg p-6 flex items-center justify-center space-x-3 transition-colors"
+          >
+            <EyeIcon className="h-6 w-6 text-blue-600" />
+            <span className="text-lg font-medium text-gray-900">アクセスログを表示</span>
+          </button>
+          
+          <button
+            onClick={() => router.push('/dashboard/analytics')}
+            className="bg-white hover:bg-gray-50 border border-gray-300 rounded-lg p-6 flex items-center justify-center space-x-3 transition-colors"
+          >
+            <ChartBarIcon className="h-6 w-6 text-green-600" />
+            <span className="text-lg font-medium text-gray-900">分析・統計を表示</span>
+          </button>
+
+          <button
+            onClick={() => router.push('/dashboard/bulk')}
+            className="bg-white hover:bg-gray-50 border border-gray-300 rounded-lg p-6 flex items-center justify-center space-x-3 transition-colors"
+          >
+            <DocumentTextIcon className="h-6 w-6 text-purple-600" />
+            <span className="text-lg font-medium text-gray-900">バルク操作</span>
+          </button>
         </div>
 
         <div className="mt-8">
@@ -242,16 +301,35 @@ function DashboardContent() {
                             </code>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                            <button
-                              onClick={() => toggleUrlStatus(url.id, url.isActive)}
-                              className={`mr-2 ${
-                                url.isActive 
-                                  ? 'text-red-600 hover:text-red-900' 
-                                  : 'text-green-600 hover:text-green-900'
-                              }`}
-                            >
-                              {url.isActive ? '無効化' : '有効化'}
-                            </button>
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => editUrl(url.id)}
+                                className="text-indigo-600 hover:text-indigo-900 flex items-center space-x-1"
+                                title="編集"
+                              >
+                                <PencilIcon className="h-4 w-4" />
+                                <span>編集</span>
+                              </button>
+                              <button
+                                onClick={() => toggleUrlStatus(url.id, url.isActive)}
+                                className={`flex items-center space-x-1 ${
+                                  url.isActive 
+                                    ? 'text-red-600 hover:text-red-900' 
+                                    : 'text-green-600 hover:text-green-900'
+                                }`}
+                                title={url.isActive ? '無効化' : '有効化'}
+                              >
+                                <span>{url.isActive ? '無効化' : '有効化'}</span>
+                              </button>
+                              <button
+                                onClick={() => deleteUrl(url.id, url.name)}
+                                className="text-red-600 hover:text-red-900 flex items-center space-x-1"
+                                title="削除"
+                              >
+                                <TrashIcon className="h-4 w-4" />
+                                <span>削除</span>
+                              </button>
+                            </div>
                           </td>
                         </tr>
                       ))}
