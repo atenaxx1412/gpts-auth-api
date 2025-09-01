@@ -1,19 +1,17 @@
-import { Timestamp } from 'firebase/firestore'
 
-export type AuthType = 'password' | 'id-password' | 'api-key' | 'oauth'
+export type AuthType = 'password' | 'basic' | 'apikey' | 'oauth'
 
 export interface URL {
-  urlId: string
-  endpoint: string
+  id: string
+  userId: string
+  name: string
+  description?: string
   authType: AuthType
-  createdAt: Timestamp
-  updatedAt: Timestamp
-  ownerId: string
+  authConfig: Record<string, unknown>
   isActive: boolean
-  metadata: {
-    name: string
-    description: string
-  }
+  createdAt: Date
+  lastAccessed?: Date
+  accessCount: number
 }
 
 export interface Authentication {
@@ -27,13 +25,14 @@ export interface Authentication {
     clientSecret?: string
     redirectUri?: string
   }
-  createdAt: Timestamp
+  createdAt: Date
   isActive: boolean
 }
 
 export interface AccessLog {
-  logId: string
-  timestamp: Timestamp
+  id: string
+  urlId: string
+  timestamp: Date
   authMethod: string
   success: boolean
   ipAddress: string
@@ -44,6 +43,6 @@ export interface User {
   uid: string
   email: string
   displayName?: string
-  createdAt: Timestamp
-  updatedAt: Timestamp
+  createdAt: Date
+  updatedAt: Date
 }

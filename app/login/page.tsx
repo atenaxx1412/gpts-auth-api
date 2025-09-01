@@ -20,7 +20,8 @@ export default function LoginPage() {
     try {
       await signInWithEmailAndPassword(auth, email, password)
       router.push('/dashboard')
-    } catch (error: any) {
+    } catch (error: unknown) {
+      console.error('Login error:', error)
       setError('ログインに失敗しました。メールアドレスとパスワードを確認してください。')
     } finally {
       setLoading(false)

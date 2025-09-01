@@ -29,8 +29,9 @@ export default function RegisterPage() {
       })
 
       router.push('/dashboard')
-    } catch (error: any) {
-      setError(error.message)
+    } catch (error: unknown) {
+      console.error('Registration error:', error)
+      setError(error instanceof Error ? error.message : '登録に失敗しました')
     } finally {
       setLoading(false)
     }
