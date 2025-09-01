@@ -126,8 +126,6 @@ const nextConfig = {
     ];
   },
   
-  // Static generation optimization
-  generateStaticParams: true,
   
   // Output configuration for Vercel
   output: 'standalone',

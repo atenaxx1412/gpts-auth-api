@@ -94,13 +94,13 @@ export class PerformanceMonitor {
         filtered = filtered.filter(m => m.category === filters.category)
       }
       if (filters.since) {
-        filtered = filtered.filter(m => m.timestamp >= filters.since)
+        filtered = filtered.filter(m => m.timestamp >= filters.since!)
       }
       if (filters.minDuration) {
-        filtered = filtered.filter(m => m.duration >= filters.minDuration)
+        filtered = filtered.filter(m => m.duration >= filters.minDuration!)
       }
       if (filters.maxDuration) {
-        filtered = filtered.filter(m => m.duration <= filters.maxDuration)
+        filtered = filtered.filter(m => m.duration <= filters.maxDuration!)
       }
     }
     
@@ -197,17 +197,10 @@ export function withPerformanceTracking(
   }
 }
 
-// Web Vitals tracking (client-side)
+// Web Vitals tracking (client-side) - Optional feature
 export function trackWebVitals() {
   if (typeof window !== 'undefined') {
-    import('web-vitals').then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
-      onCLS(console.log)
-      onINP(console.log)
-      onFCP(console.log)
-      onLCP(console.log)
-      onTTFB(console.log)
-    }).catch(() => {
-      // web-vitals not available, skip tracking
-    })
+    // Web Vitals tracking can be added by installing the web-vitals package
+    console.log('Web Vitals tracking available - install web-vitals package to enable')
   }
 }

@@ -87,10 +87,10 @@ export class ErrorMonitor {
         filtered = filtered.filter(e => e.resolved === filters.resolved)
       }
       if (filters.since) {
-        filtered = filtered.filter(e => e.timestamp >= filters.since)
+        filtered = filtered.filter(e => e.timestamp >= filters.since!)
       }
       if (filters.endpoint) {
-        filtered = filtered.filter(e => e.context.endpoint.includes(filters.endpoint))
+        filtered = filtered.filter(e => e.context.endpoint.includes(filters.endpoint!))
       }
     }
     
